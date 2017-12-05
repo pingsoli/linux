@@ -118,6 +118,15 @@ epoll_server_start(int argc, char **argv)
     abort();
   }
 
+  event.data.fd = sfd;
+  event.events = EPOLLIN | EPOLLET;
+  s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
+  if (s == -1)
+  {
+    perror(" epoll_ctl");
+    abort();
+  }
+
   /* Buffer where events are returned */
   events = calloc(MAXEVENTS, sizeof(event));
 
@@ -185,6 +194,10 @@ epoll_server_start(int argc, char **argv)
            * Make the incoming socket non-blocking and add 
            * it to the list of fds to monitor
            */
+          s = make_socket_non_blocking(infd);
+          if (s == -1)
+            abort();
+
           event.data.fd = infd;
           event.events = EPOLLIN | EPOLLET;
           s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
