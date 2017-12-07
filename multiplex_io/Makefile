@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -g -O0
+CFLAGS = -Wall -g -O0 -D_GNU_SOURCE
+
 
 # Specify include source code directory, output object file directory
 # and final executable file directory
