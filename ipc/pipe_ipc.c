@@ -6,25 +6,55 @@
 #include "pipe_ipc.h"
 
 /*
-void read_from_pipe(int fd)
-{
-  FILE *stream;
-  int c;
-  stream = fdopen(fd, "r");
-  while ((c = fgetc(stream)) != EOF)
-    putchar(c);
+ * Half-Duple Pipe
+ * Child process send some data to parent process.
+ * Pipe is a pair of file descriptors, the first is used
+ * to reading, and the next is writing.
+ *
+ * Child process forked by parent process, and will inherient
+ * the opend file descriptors, so we could close the unused 
+ * file descriptors.
+ *
+ * Pipe types: Half-Duplex Pipe and Full-Duplex Pipe
+ *
+ * Half-Duplex Pipe all one direction of data flow.
+ * Full-Duplex Pipe allow two directions of the flowing.
+ */
 
-  fclose(stream);
-}
-
-void write_to_pipe(int fd, char *buf)
+/*
+ * Example 1
+ * Fork a child process and write some data to parent,
+ * parent process receive the data and print to screen.
+ */
+void half_pipe_exam1()
 {
-  FILE *stream;
-  stream = fdopen(fd, "w");
-  fprintf(stream, "%s", buf);
-  fclose(stream);
+  int n, fds[2];
+  pid_t pid;
+  unsigned const int max_line = 1024;
+  char line[max_line];
+
+  pid = fork();
+
+  if (pid < 0)
+  {
+    perror("fork error");
+    exit(1);
+  }
+
+  if (pid == 0)
+  {
+    /* Child process */
+    close (fds[0]);
+    write(fds[1], "hello\n", 6);
+  }
+  else
+  {
+    /* Parent process */
+    close (fds[1]);
+    n = read(fds[0], line, max_line);
+    write(STDOUT_FILENO, line, n);
+  }
 }
-*/
 
 void pipe_test()
 {
