@@ -1,14 +1,13 @@
+#include <errno.h>
+#include <fcntl.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <sys/epoll.h>
-#include <errno.h>
-#include "epoll_server.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #define MAXEVENTS 64
 
@@ -43,7 +42,7 @@ create_and_bind(char *port)
       /* We managed to bind succesfully */
       break;
     }
-    
+
     close(sfd);
   }
 
@@ -57,7 +56,6 @@ create_and_bind(char *port)
 
   return sfd;
 }
-
 
 static int
 make_socket_non_blocking(int sfd)
@@ -82,7 +80,7 @@ make_socket_non_blocking(int sfd)
   return 0;
 }
 
-int 
+int
 epoll_server_start(int argc, char **argv)
 {
   int sfd, s;
@@ -113,7 +111,7 @@ epoll_server_start(int argc, char **argv)
 
   efd = epoll_create1 (0);
   if (efd == -1)
-  { 
+  {
     perror("epoll_create");
     abort();
   }
@@ -134,11 +132,11 @@ epoll_server_start(int argc, char **argv)
   while (1)
   {
     int n, i;
-     
+
     n = epoll_wait(efd, events, MAXEVENTS, -1);
     for (i = 0; i < n; i++)
     {
-      if ((events[i].events & EPOLLERR) || 
+      if ((events[i].events & EPOLLERR) ||
           (events[i].events & EPOLLHUP) ||
           (!(events[i].events & EPOLLIN)))
       {
@@ -153,7 +151,7 @@ epoll_server_start(int argc, char **argv)
       else if (sfd == events[i].data.fd)
       {
         /*
-         * We have a notification on the listening socket, 
+         * We have a notification on the listening socket,
          * which means one or more incoming connections
          */
         while (1)
@@ -162,26 +160,26 @@ epoll_server_start(int argc, char **argv)
           socklen_t in_len;
           int infd;
           char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-          
+
           in_len = sizeof in_addr;
           infd = accept(sfd, &in_addr, &in_len);
           if (infd == -1)
           {
-            if ((errno == EAGAIN) || 
+            if ((errno == EAGAIN) ||
                 (errno == EWOULDBLOCK))
             {
               /* We have processed all incomint connections */
               break;
             }
-            else 
+            else
             {
               perror("accept");
               break;
             }
           }
 
-          s = getnameinfo(&in_addr, in_len, 
-                          hbuf, sizeof hbuf, 
+          s = getnameinfo(&in_addr, in_len,
+                          hbuf, sizeof hbuf,
                           sbuf, sizeof sbuf,
                           NI_NUMERICHOST | NI_NUMERICSERV);
           if (s == 0)
@@ -190,8 +188,8 @@ epoll_server_start(int argc, char **argv)
                 "(host=%s, port=%s)\n", infd, hbuf, sbuf);
           }
 
-          /* 
-           * Make the incoming socket non-blocking and add 
+          /*
+           * Make the incoming socket non-blocking and add
            * it to the list of fds to monitor
            */
           s = make_socket_non_blocking(infd);
@@ -213,7 +211,7 @@ epoll_server_start(int argc, char **argv)
       {
         /*
          * We have data on the fd waiting to be read.
-         * Read and display it, we must read whatever 
+         * Read and display it, we must read whatever
          * data is available completely, as we are running
          * in edge-triggered mode and won't get a notification
          * again for the same data.
@@ -243,7 +241,7 @@ epoll_server_start(int argc, char **argv)
           {
             /*
              * End of file. the remote has closed the connection
-             */ 
+             */
             done = 1;
             break;
           }
@@ -259,11 +257,11 @@ epoll_server_start(int argc, char **argv)
 
         if (done)
         {
-          printf("Closed connection on descriptor %d\n", 
+          printf("Closed connection on descriptor %d\n",
                 events[i].data.fd);
 
-          /* 
-           * Closing the descriptor will make epoll remove 
+          /*
+           * Closing the descriptor will make epoll remove
            * it from the set of descriptors which are monitored
            */
           close (events[i].data.fd);
@@ -276,4 +274,16 @@ epoll_server_start(int argc, char **argv)
   close (sfd);
 
   return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv)
+{
+  if (argc < 2) {
+    fprintf(stderr, "Usage: %s <port>\n", argv[0]);;
+    exit(-1);
+  }
+
+  epoll_server_start(argc, argv);
+
+  return 0;
 }
