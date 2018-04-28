@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
-#include "pipe_ipc.h"
 
 /*
  * Half-Duple Pipe
@@ -12,7 +11,7 @@
  * to reading, and the next is writing.
  *
  * Child process forked by parent process, and will inherient
- * the opend file descriptors, so we could close the unused 
+ * the opend file descriptors, so we could close the unused
  * file descriptors.
  *
  * Pipe types: Half-Duplex Pipe and Full-Duplex Pipe
@@ -94,7 +93,7 @@ void pipe_test()
   char my_buf[4];
   write(inpipe[1], buf, arr_len);
 
-  // Wait for data, blocking 
+  // Wait for data, blocking
   read(outpipe[0], my_buf, arr_len);
 
   // Release resources
@@ -103,18 +102,18 @@ void pipe_test()
   close(outpipe[0]);
   close(outpipe[1]);
 
-  // Print changed info, ABD => ABC 
+  // Print changed info, ABD => ABC
   printf("%s\n", my_buf);
 
   return;
 }
 
 /*
- * Task: ls | wc -l 
+ * Task: ls | wc -l
  * Attach stdout of 'ls' to the stdin of 'wc -l'
  * stdin -> ls -> wc -l -> stdout
  */
-void 
+void
 pipe_do_task()
 {
   int pfds[2];
@@ -135,8 +134,8 @@ pipe_do_task()
     dup(pfds[1]);   /* Make pfds[1] stdout */
     close(pfds[0]); /* No need this */
     execlp("ls", "ls", NULL);
-  } 
-  else 
+  }
+  else
   {
     /* Parent process */
     close(0);       /* Close stdin */
@@ -146,4 +145,13 @@ pipe_do_task()
   }
 
   return;
+}
+
+int main(int argc, char *argv[])
+{
+//  pipe_test();
+//  pipe_do_task();
+  half_pipe_exam1();
+
+  return 0;
 }

@@ -1,5 +1,3 @@
-#include "winsize.h"
-
 #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,8 +44,12 @@ void monitor_win_size()
     exit(1);
   }
 
-  /* Print initial size, and sleep forever */
   pr_winsize(STDIN_FILENO);
-  for (; ;)
-    pause();
+}
+
+int main(int argc, char** argv)
+{
+  monitor_win_size();
+
+  return 0;
 }

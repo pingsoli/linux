@@ -1,4 +1,10 @@
-#include "header.h"
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 void showip(int argc, char **argv)
 {
@@ -15,7 +21,7 @@ void showip(int argc, char **argv)
   memset(&hints, 0, sizeof hints);
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
-  
+
   if ((status = getaddrinfo(argv[1], NULL, &hints, &res)) != 0)
   {
     fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
@@ -33,14 +39,14 @@ void showip(int argc, char **argv)
      * Get the pointer to the address itself,
      * different fields in IPv4 and IPv6
      */
-    if (p->ai_family == AF_INET) 
+    if (p->ai_family == AF_INET)
     {
       /* IPv4*/
       struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
       addr = &(ipv4->sin_addr);
       ipver = "IPv4";
     }
-    else 
+    else
     {
       /* IPv6 */
       struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
@@ -55,4 +61,10 @@ void showip(int argc, char **argv)
 
   /* Free the linked list */
   freeaddrinfo(res);
+}
+
+int main(int argc, char** argv)
+{
+  showip(argc, argv);
+  return 0;
 }

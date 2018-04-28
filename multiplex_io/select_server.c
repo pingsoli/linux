@@ -13,19 +13,17 @@
 typedef struct {
   short port;        // 2
   bool  reuseable;   // 1
-  bool  nonblocking; // 1
   int   listen_fd;   // 4
   int   backlog;     // 4
 } server_st;
 
-void set_nonblocking(server_st *server)
+void set_nonblocking(int fd)
 {
-  int flags = fcntl(server->listen_fd, F_GETFL, 0);
+  int flags = fcntl(fd, F_GETFL, 0);
   if (flags == -1) return;
 
   flags = flags | O_NONBLOCK;
-  server->nonblocking =
-    fcntl(server->listen_fd, F_SETFL, flags) ? true : false;
+  fcntl(fd, F_SETFL, flags);
 }
 
 void create_and_bind(server_st *server, char *port)
@@ -65,7 +63,7 @@ void create_and_bind(server_st *server, char *port)
     break;
   }
 
-  set_nonblocking(server);
+  set_nonblocking(server->listen_fd);
 
   if (p == NULL)
   {

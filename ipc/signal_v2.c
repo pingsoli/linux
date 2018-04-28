@@ -1,4 +1,3 @@
-#include "signal_v2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -9,7 +8,7 @@
 /**
  * This program use signal to achieve IPC
  * One process write, another is ready to read.
- * Use SIGUSR1 and SIGUSR2 to be 0 and 1, every bit will 
+ * Use SIGUSR1 and SIGUSR2 to be 0 and 1, every bit will
  * be transferred and decode to correct byte.
  */
 
@@ -22,7 +21,7 @@ void send_bit(pid_t friend, int bit);
 void send_char(pid_t friend, char c);
 
 /*
- * Signal is transmitted unorder 
+ * Signal is transmitted unorder
  * Use blocking way to keep order right
  */
 void signal_ipc(int argc, char **argv)
@@ -69,8 +68,8 @@ int get_next_signal()
 int recv_bit(pid_t friend)
 {
   int bit = (get_next_signal() == SIGUSR2) ? 1 : 0;
-  /* 
-   * It's important, we just need to send a signal, 
+  /*
+   * It's important, we just need to send a signal,
    * SIGUSR1 and SIGUSR2 are ok.
    */
   kill(friend, SIGUSR1);
@@ -83,7 +82,7 @@ char recv_char(pid_t friend)
   char c = 0;
   for (i = 0; i < 8; i++)
     c |= recv_bit(friend) << i;
-  
+
   return c;
 }
 
@@ -105,4 +104,10 @@ void send_char(pid_t friend, char c)
     /* Wait until my friend acknowleges the message */
     get_next_signal();
   }
+}
+
+int main(int argc, char** argv)
+{
+  signal_ipc(argc, argv);
+  return 0;
 }

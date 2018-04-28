@@ -89,3 +89,14 @@ void print_std_tty_name()
       printf("fd %d: %s\n", fd, "is not tty");
   }
 }
+
+int main(int argc, char *argv[])
+{
+  set_and_get_terminal_prop();
+  print_tty_name();
+  print_stdio_tty();
+  printf("fd 1, tty name: %s\n", get_tty_name(1));
+  print_std_tty_name();
+
+  return 0;
+}
