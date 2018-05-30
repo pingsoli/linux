@@ -7,3 +7,4 @@ set(CMAKE_C_STANDARD_REQUIRED on)
 ################################################################################
 add_executable(signal_first_program signal_first_program.c)
 add_executable(sigaction            sigaction.c)
+add_executable(blocking_signal      blocking_signal.c)
