@@ -69,7 +69,7 @@ static void daemonize()
   }
 
   /* Reopen stdin, stdout, stderr */
-  stdin = fopen("/dev/null", "r");
+  stdin  = fopen("/dev/null", "r");
   stdout = fopen("/dev/null", "w+");
   stderr = fopen("/dev/null", "w+");
 

@@ -1,8 +1,19 @@
 /*
- * Blocking signal
+ * What is the mean of blocking a signal ?
  * Blocking a signal means telling the operating system to hold it and deliver
  * it later when it is generated and when it is delivered a singal is said to
  * be pending.
+ *
+ * How to block a signal ?
+ * block the signal
+ * sigprocmask(SIG_BLOCK, &blockmask, &oldmask)
+ * unblock the signal
+ * sigprocmask(SIG_SETMASK, &oldmask, NULL);
+ *
+ * NOTE:
+ * 1) same signals are not been queued, may be delivered only once even
+ * triggered multi-times.(we can block the signal, trigger the signal one more
+ * time and unblock it, we can only see the handler has been called only once).
  */
 #include <stdio.h>
 #include <stdlib.h>
