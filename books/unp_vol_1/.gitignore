@@ -1,0 +1,11 @@
+# Ignore compile middleware
+*.o
+*.swp
+*.out
+
+# Ignore all build and bin directory
+[Bb]in/
+[Bb]uild/
+
+# ctags file
+tags
