@@ -10,3 +10,6 @@ target_link_libraries(mutex -pthread)
 
 add_executable(race_condition race_condition.c)
 target_link_libraries(race_condition -pthread)
+
+add_executable(semaphore semaphore.c)
+target_link_libraries(semaphore -pthread rt)

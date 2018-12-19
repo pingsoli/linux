@@ -114,10 +114,9 @@ int main(int argc, char** argv)
       }
     }
 
+    inet_ntop(AF_INET, &cliaddr.sin_addr, cliip, clilen);
     printf("connection %d from %s, port %d\n",
-        connfd,
-        inet_ntop(AF_INET, &cliaddr.sin_addr, cliip, clilen),
-        cliaddr.sin_port);
+        connfd, cliip, ntohs(cliaddr.sin_port));
 
     if ((childpid = fork()) == 0) { /* child process */
       close(listenfd); /* close listening socket */

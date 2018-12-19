@@ -92,6 +92,11 @@ void run(server_st *server)
   int fdmax, i, j, newfd;
   int nbytes;
   char buf[256];
+  struct timeval timer, tmp_timer;
+
+  timer.tv_sec = 3;
+  timer.tv_usec = 0;
+  tmp_timer = timer;
 
   FD_ZERO(&master);
   FD_ZERO(&read_fds);
@@ -108,10 +113,11 @@ void run(server_st *server)
   {
     read_fds = master;
 
-    if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+    if (select(fdmax + 1, &read_fds, NULL, NULL, &tmp_timer) == -1) {
       perror("select failed");
       exit(4);
     }
+    tmp_timer = timer; // reset timer because select will modify it
 
     for (i = 0; i <= fdmax; ++i)
     {

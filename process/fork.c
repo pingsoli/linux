@@ -5,7 +5,7 @@
  * Because both processes will start their execution at the next statement
  * following the fork() call.
  *
- * NOTE: the program exist race condition.
+ * NOTE: the program exists race condition.
  */
 #include <stdio.h>
 #include <unistd.h>

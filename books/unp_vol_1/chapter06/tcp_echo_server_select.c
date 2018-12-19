@@ -60,6 +60,7 @@ int main(int argc, char** argv)
   for ( ;; ) {
     rset = allset;
     nready = select(maxfd + 1, &rset, NULL, NULL, NULL);
+    printf("the ready file descriptor num: %d\n", nready);
 
     if (FD_ISSET(listenfd, &rset)) { /* new client connection */
       /*
@@ -72,8 +73,8 @@ int main(int argc, char** argv)
       clilen = sizeof(cliaddr);
       connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
 
-      /* print new client infomation */
-      printf("connection %d from %s port %d\n",
+      /* print new client ip address and port number */
+      printf("connection fd[%d] from %s port %d\n",
           connfd,
           inet_ntop(AF_INET, &cliaddr.sin_addr, cliip, clilen),
           cliaddr.sin_port);

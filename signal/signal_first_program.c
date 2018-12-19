@@ -1,5 +1,5 @@
 /*
- * signal function first program
+ * first program to understand signal.
  * know that register a handler to handle all kind of signals
  *
  * Reliable signals and unreliable signals ?
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
   signal(SIGTERM, sigterm_handler); /* signal num: 15  */
 
   /*
-   * Ctrl-C trigger SIGINT signal
+   * Ctrl-C triggers SIGINT signal.
    * kill -2 <pid> trigger SIGINT signal from outside.
    * kill -INT <pid>
    */
@@ -51,8 +51,10 @@ int main(int argc, char** argv)
    */
   signal(SIGKILL, sigquit_handler);
 
-  for ( ;; )
-    sleep(1);
+  pause(); // wait for signal
+  printf("main function end\n");
+  /* for ( ;; ) */
+  /*   sleep(1); */
 
   return 0;
 }

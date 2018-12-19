@@ -5,7 +5,6 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED on)
 
 ################################################################################
-add_executable(epoll_server epoll_server.c)
-add_executable(poll_server poll_server.c)
-add_executable(select_server select_server.c)
-add_executable(select select.c)
+add_executable(LT_and_ET01 LT_and_ET01.c)
+add_executable(LT_and_ET02 LT_and_ET02.c)
+add_executable(LT_and_ET03 LT_and_ET03.c)
